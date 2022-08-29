@@ -23,6 +23,7 @@ import (
 	"fmt"
 
 	"github.com/bishopfox/sliver/client/console"
+	"github.com/bishopfox/sliver/util"
 	consts "github.com/bishopfox/sliver/client/constants"
 	"github.com/bishopfox/sliver/protobuf/clientpb"
 	"google.golang.org/protobuf/proto"
@@ -56,6 +57,9 @@ func MsfCmd(ctx *grumble.Context, con *console.SliverConsoleClient) {
 		goos = beacon.OS
 		goarch = beacon.Arch
 	}
+
+	// check if the lhost is an interface and resolve to IP if it is
+	lhost, _ := InterfaceNameToIp(lhost)
 
 	ctrl := make(chan bool)
 	msg := fmt.Sprintf("Sending msf payload %s %s/%s -> %s:%d ...",
