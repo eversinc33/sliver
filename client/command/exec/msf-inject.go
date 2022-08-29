@@ -50,8 +50,6 @@ func MsfInjectCmd(ctx *grumble.Context, con *console.SliverConsoleClient) {
 		con.PrintErrorf("Invalid lhost '%s', see `help %s`\n", lhost, consts.MsfInjectStr)
 		return
 	}
-	// check if the lhost is an interface and resolve to IP if it is
-	lhost, _ := InterfaceNameToIp(lhost)
 	if pid == -1 {
 		con.PrintErrorf("Invalid pid '%s', see `help %s`\n", lhost, consts.MsfInjectStr)
 		return
@@ -65,6 +63,9 @@ func MsfInjectCmd(ctx *grumble.Context, con *console.SliverConsoleClient) {
 		goos = beacon.OS
 		goarch = beacon.Arch
 	}
+
+	// check if the lhost is an interface and resolve to IP if it is
+	lhost, _ := InterfaceNameToIp(lhost)
 
 	ctrl := make(chan bool)
 	msg := fmt.Sprintf("Sending msf payload %s %s/%s -> %s:%d ...",
