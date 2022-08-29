@@ -19,29 +19,31 @@ package util
 */
 
 import (
+	"errors"
+	"fmt"
 	"net"
 )
 
 // InterfaceNameToIp - Resolve the name of an interface to the corresponding IPv4 address
 func InterfaceNameToIp(interfaceName string) (address string, err error) {
 	var (
-        iface *net.Interface
-        addresses []net.Addr
-        addr net.IP
-    )
-    if ief, err = net.InterfaceByName(interfaceName); err != nil { 
-        return interfaceName, err
-    }
-    if addrs, err = ief.Addrs(); err != nil { 
-        return interfaceName, err
-    }
-    for _, a := range addresses { 
-        if addr = a.(*net.IPNet).IP.To4(); addr != nil {
-            break
-        }
-    }
-    if ipv4Addr == nil {
-        return interfaceName, errors.New(fmt.Sprintf("Could not get IP for interface %s", interfaceName))
-    }
-    return ipv4Addr.String(), nil
+		iface     *net.Interface
+		addresses []net.Addr
+		addr      net.IP
+	)
+	if iface, err = net.InterfaceByName(interfaceName); err != nil {
+		return interfaceName, err
+	}
+	if addresses, err = iface.Addrs(); err != nil {
+		return interfaceName, err
+	}
+	for _, a := range addresses {
+		if addr = a.(*net.IPNet).IP.To4(); addr != nil {
+			break
+		}
+	}
+	if addr == nil {
+		return interfaceName, errors.New(fmt.Sprintf("Could not get IP for interface %s", interfaceName))
+	}
+	return addr.String(), nil
 }
